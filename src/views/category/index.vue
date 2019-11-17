@@ -3,7 +3,6 @@
     <el-container>
       <el-main>
           <cate-search></cate-search>
-
           <table-main :state="state"></table-main>
       </el-main>
     </el-container>

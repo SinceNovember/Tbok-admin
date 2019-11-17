@@ -9,7 +9,7 @@
         size="mini"
         :disabled="selectedLength ===0"
         @click="deleteMany"
-      >删除</el-button>
+      >删除1</el-button>
     </div>
 
     <div class="right-group">
