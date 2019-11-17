@@ -24,12 +24,12 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" min-width="19%" align="center" v-if="arr[1].show">
-        <template slot-scope="scope">{{ scope.row.publishDate|formatTableDate}}</template>
+        <template slot-scope="scope">{{ scope.row.createTime}}</template>
       </el-table-column>
       <el-table-column label="状态" min-width="10%" align="center" v-if="arr[2].show">
         <template slot-scope="{row}">
-          <el-tag type="success" v-if="row.state === 1">已发布</el-tag>
-          <el-tag type="info" v-else-if="row.state === 0">草稿箱</el-tag>
+          <el-tag type="success" v-if="row.type === 1">已发布</el-tag>
+          <el-tag type="info" v-else-if="row.type === 0">草稿箱</el-tag>
           <el-tag type="danger" v-else>垃圾箱</el-tag>
         </template>
       </el-table-column>
@@ -44,24 +44,24 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="评分" min-width="17%" align="center" v-if="arr[4].show">
-        <template slot-scope="{row}">
-          <el-rate
-            v-model="row.rate"
-            text-color="#ff9900"
-            :colors="colors"
-            :max="4"
-            @change="changeRate(row.id,row.rate)"
-          ></el-rate>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="nickname"
-        label="作者"
-        min-width="10%"
-        :show-overflow-tooltip="true"
-        v-if="arr[5].show"
-      ></el-table-column>
+<!--      <el-table-column label="评分" min-width="17%" align="center" v-if="arr[4].show">-->
+<!--        <template slot-scope="{row}">-->
+<!--          <el-rate-->
+<!--            v-model="row.rate"-->
+<!--            text-color="#ff9900"-->
+<!--            :colors="colors"-->
+<!--            :max="4"-->
+<!--            @change="changeRate(row.id,row.rate)"-->
+<!--          ></el-rate>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column-->
+<!--        prop="nickname"-->
+<!--        label="作者"-->
+<!--        min-width="10%"-->
+<!--        :show-overflow-tooltip="true"-->
+<!--        v-if="arr[5].show"-->
+<!--      ></el-table-column>-->
       <el-table-column
         prop="pageView"
         label="点击量"
@@ -161,15 +161,18 @@ export default {
     loadArticles(currentPage, pageSize) {
       var _this = this;
       var params = {
-        state: this.state,
+        type: this.type,
         pageSize: pageSize,
         currentPage: currentPage,
         keywords: this.keywords,
         recommend: this.recommend,
-        startDate: this.startDate,
-        endDate: this.endDate
+        startDate: null,
+        endDate: null,
+        type:0
       };
       fetchArticles(params).then(res => {
+        console.log(params);
+        console.log(res);
         _this.articles = res.data.articles;
         _this.totalCount = res.data.totalCount;
         _this.loading = false;

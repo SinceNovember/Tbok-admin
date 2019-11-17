@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const fetchArticles = params =>{ return axios.get('articles',{params:params});};
+export const fetchArticles = params =>{ return axios.get('/articles',{params:params});};
 
 export const fetchArticleGroup = () =>{ return axios.get('/articleGroup');};
 

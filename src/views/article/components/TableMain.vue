@@ -2,7 +2,7 @@
         <div class="article-container">
 
   <el-card>
-    <btn-group :state="state" :selectedLength="selectedLength"></btn-group>
+    <btn-group :type="state" :selectedLength="selectedLength"></btn-group>
 
     <div class="article-list">
       <blog-table @articleSelected="articleSelected"></blog-table>

@@ -15,7 +15,7 @@
                     <svg-icon icon-class="all" />
                   </i>所有
                   <span>
-                    <el-tag>{{articleGroup[3]}}</el-tag>
+                    <el-tag>{{articleGroup[0]}}</el-tag>
                   </span>
                 </a>
               </li>
@@ -25,7 +25,7 @@
                     <svg-icon icon-class="release" />
                   </i>已发布
                   <span>
-                    <el-tag type="success">{{articleGroup[2]}}</el-tag>
+                    <el-tag type="success">{{articleGroup[1]}}</el-tag>
                   </span>
                 </a>
               </li>
@@ -35,7 +35,7 @@
                     <svg-icon icon-class="draft" />
                   </i>草稿箱
                   <span>
-                    <el-tag type="info">{{articleGroup[1]}}</el-tag>
+                    <el-tag type="info">{{articleGroup[2]}}</el-tag>
                   </span>
                 </a>
               </li>
@@ -45,7 +45,7 @@
                     <svg-icon icon-class="trash" />
                   </i>垃圾箱
                   <span>
-                    <el-tag type="danger">{{articleGroup[0]}}</el-tag>
+                    <el-tag type="danger">{{articleGroup[3]}}</el-tag>
                   </span>
                 </a>
               </li>
