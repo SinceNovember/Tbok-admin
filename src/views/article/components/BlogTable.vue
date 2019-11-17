@@ -105,8 +105,8 @@ export default {
       state: 2,
       recommend: null,
       title: "",
-      startDate: "",
-      endDate: "",
+      startDate: null,
+      endDate: null,
       keywords: "",
       dustbinData: [],
       multipleSelection: [],
@@ -134,6 +134,7 @@ export default {
       _this.keywords = params.keywords;
       _this.state = params.state;
       _this.recommend = params.recommend;
+      console.log(params.startDate);
       _this.startDate = params.startDate;
       _this.endDate = params.endDate;
       _this.loadArticles(1, _this.pageSize);
@@ -166,8 +167,8 @@ export default {
         currentPage: currentPage,
         keywords: this.keywords,
         recommend: this.recommend,
-        startDate: null,
-        endDate: null,
+        startDate: this.startDate,
+        endDate: this.endDate,
         type:0
       };
       fetchArticles(params).then(res => {
