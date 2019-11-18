@@ -102,7 +102,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       keywords: "",
-      state: 2,
+      type: 2,
       recommend: null,
       title: "",
       startDate: null,
@@ -121,9 +121,10 @@ export default {
     var _this = this;
     _this.loading = true;
     _this.loadArticles(1, this.pageSize);
-    window.bus.$on("blogTableReload", function(state) {
+    window.bus.$on("blogTableReload", function(type) {
+      console.log("1:"+type);
       _this.loading = true;
-      _this.state = state;
+      _this.type = type;
       _this.resetSearch(_this);
       _this.currentPage = 1;
       _this.loadArticles(1, _this.pageSize);
@@ -132,7 +133,7 @@ export default {
       _this.loading = true;
       _this.currentPage = 1;
       _this.keywords = params.keywords;
-      _this.state = params.state;
+      _this.type = params.type;
       _this.recommend = params.recommend;
       console.log(params.startDate);
       _this.startDate = params.startDate;
@@ -140,22 +141,22 @@ export default {
       _this.loadArticles(1, _this.pageSize);
     });
     window.bus.$on("resetSearch", function() {
-      _this.state = 2;
+      _this.type = 2;
       _this.resetSearch(_this);
     });
     window.bus.$on("resetTable", function() {
       _this.loading = true;
       _this.loadArticles(_this.currentPage, _this.pageSize);
     });
-    window.bus.$on("deleteMany", state => _this.deleteMany(state));
+    window.bus.$on("deleteMany", type => _this.deleteMany(type));
 
-    window.bus.$on("changeselect", state => {
+    window.bus.$on("changeselect", type => {
       var _this = this;
       const noselect = _this.all.filter(function(v) {
-        return state.indexOf(v) == -1;
+        return type.indexOf(v) == -1;
       });
       noselect.map(item => (_this.arr[item].show = false));
-      state.map(item => (_this.arr[item].show = true));
+      type.map(item => (_this.arr[item].show = true));
     });
   },
   methods: {
@@ -194,7 +195,7 @@ export default {
       this.loadArticles(currentPage, this.pageSize);
     },
     handleDelete(index, row) {
-      this.deleteByState(row.id, 2); //2永久删除，-1放入垃圾箱，0放入回收站
+      this.deleteByType(row.id, 2); //2永久删除，-1放入垃圾箱，0放入回收站
       // this.dustbinData.push(row.id);
       // var ids = this.dustbinData.toString();
       // this.deleteToDustBin(this.state, ids);
@@ -207,11 +208,11 @@ export default {
       const property = column["property"];
       return row[property] === value;
     },
-    deleteMany(state) {
+    deleteMany(type) {
       var ids = this.multipleSelection.map(item => item.id).toString();
-      this.deleteByState(ids, state);
+      this.deleteByType(ids, state);
     },
-    deleteByState(ids, state) {
+    deleteByType(ids, state) {
       this.$confirm(
         state == 2
           ? "永久删除选中的文章, 是否继续?"
@@ -226,15 +227,15 @@ export default {
         }
       ).then(() => {
         this.loading = true;
-        let params = { ids: ids, state: state };
+        let params = { ids: ids, type: type };
         deleteArticle(params).then(res => {
           if (res.status == 200) {
             this.loading = false;
             this.$message({
               message:
-                state == 2
+                type == 2
                   ? "删除成功"
-                  : state == -1
+                  : type == -1
                   ? "已放入垃圾箱"
                   : "已放入草稿箱",
               type: "success"

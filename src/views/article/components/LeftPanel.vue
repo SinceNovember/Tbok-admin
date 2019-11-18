@@ -75,7 +75,7 @@ export default {
       value1: "",
       value2: "",
       articleGroup: [],
-      state: 2
+      type: 2
     };
   },
   computed: {
@@ -95,8 +95,9 @@ export default {
         _this.articleGroup = res.data;
       });
     },
-    changeArticles(state) {
-      this.$emit('changeArticle',state)
+    changeArticles(type) {
+      console.log(type);
+      this.$emit('blogTableReload',type)
     },
     toggleLeft() {
       this.$store.dispatch("articleSettings/toggleArticleLeft");
