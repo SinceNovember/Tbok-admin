@@ -96,8 +96,7 @@ export default {
       });
     },
     changeArticles(type) {
-      console.log(type);
-      this.$emit('blogTableReload',type)
+      window.bus.$emit('blogTableReload',type)
     },
     toggleLeft() {
       this.$store.dispatch("articleSettings/toggleArticleLeft");

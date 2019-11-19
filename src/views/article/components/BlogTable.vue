@@ -163,18 +163,16 @@ export default {
     loadArticles(currentPage, pageSize) {
       var _this = this;
       var params = {
-        type: this.type,
+        type: _this.type,
         pageSize: pageSize,
         currentPage: currentPage,
-        keywords: this.keywords,
-        recommend: this.recommend,
-        startDate: this.startDate,
-        endDate: this.endDate,
-        type:0
+        keywords: _this.keywords,
+        recommend: _this.recommend,
+        startDate: _this.startDate,
+        endDate: _this.endDate,
       };
+      console.log("param:"+params.type);
       fetchArticles(params).then(res => {
-        console.log(params);
-        console.log(res);
         _this.articles = res.data.articles;
         _this.totalCount = res.data.totalCount;
         _this.loading = false;
