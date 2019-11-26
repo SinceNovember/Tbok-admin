@@ -101,13 +101,12 @@ export default {
       totalCount: 0,
       currentPage: 1,
       pageSize: 10,
-      keywords: "",
+      keyWord: "",
       type: 2,
       recommend: null,
       title: "",
       startDate: null,
       endDate: null,
-      keywords: "",
       dustbinData: [],
       multipleSelection: [],
       arr: Array.apply(null, Array(8)).map(item => {
@@ -122,7 +121,6 @@ export default {
     _this.loading = true;
     _this.loadArticles(1, this.pageSize);
     window.bus.$on("blogTableReload", function(type) {
-      console.log("1:"+type);
       _this.loading = true;
       _this.type = type;
       _this.resetSearch(_this);
@@ -132,7 +130,7 @@ export default {
     window.bus.$on("searchTable", function(params) {
       _this.loading = true;
       _this.currentPage = 1;
-      _this.keywords = params.keywords;
+      _this.keyWord= params.keywords;
       _this.type = params.type;
       _this.recommend = params.recommend;
       console.log(params.startDate);
@@ -166,12 +164,11 @@ export default {
         type: _this.type,
         pageSize: pageSize,
         currentPage: currentPage,
-        keywords: _this.keywords,
+        keyWord: _this.keyWord,
         recommend: _this.recommend,
         startDate: _this.startDate,
         endDate: _this.endDate,
       };
-      console.log("param:"+params.type);
       fetchArticles(params).then(res => {
         _this.articles = res.data.articles;
         _this.totalCount = res.data.totalCount;

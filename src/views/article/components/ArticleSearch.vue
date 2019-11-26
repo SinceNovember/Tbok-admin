@@ -13,9 +13,9 @@
       </div>
       <div>
         博客状态:
-        <el-select v-model="chooseState" size="mini" placeholder="所有" popper-class="test">
+        <el-select v-model="chooseType" size="mini" placeholder="所有" popper-class="test">
           <el-option
-            v-for="item in stateOptions"
+            v-for="item in typeOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -72,7 +72,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      stateOptions: [
+      typeOptions: [
         {
           value: 2,
           label: "所有"
@@ -135,7 +135,7 @@ export default {
           }
         ]
       },
-      chooseState: 2,
+      chooseType: 2,
       chooseRecommend: null,
       chooseDate: "",
       keywords: ""
@@ -148,7 +148,7 @@ export default {
     search() {
       var params = {
         keywords: this.keywords,
-        state: this.chooseState,
+        type: this.chooseType,
         recommend: this.chooseRecommend,
         startDate: this.chooseDate[0],
         endDate: this.chooseDate[1]
@@ -157,7 +157,7 @@ export default {
     },
     reset() {
       this.keywords = "";
-      this.chooseState = 2;
+      this.chooseType = 2;
       this.chooseRecommend = null;
       this.chooseDate = "";
       window.bus.$emit("resetSearch");
