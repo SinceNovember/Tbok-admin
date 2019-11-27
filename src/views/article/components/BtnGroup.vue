@@ -1,12 +1,12 @@
 <template>
   <div class="btn-group">
     <div class="left-group">
-      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2">新增</el-button>
+      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="type ===1 || type ===2">新增</el-button>
       <el-button
         type="success"
         icon="el-icon-edit"
         size="mini"
-        v-show="state === -1"
+        v-show="type === -1"
         :disabled="selectedLength ===0"
       >恢复</el-button>
       <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1">修改</el-button>
@@ -22,14 +22,14 @@
         icon="el-icon-s-promotion"
         size="mini"
         :disabled="selectedLength ===0"
-        v-show="state === 0"
+        v-show="type === 0"
       >发布</el-button>
       <el-button
         type="info"
         icon="el-icon-folder"
         size="mini"
         :disabled="selectedLength===0"
-        v-show="state != 0"
+        v-show="type != 0"
         @click="toDraft"
       >草稿箱</el-button>
       <el-button
@@ -37,7 +37,7 @@
         icon="el-icon-delete-solid"
         size="mini"
         :disabled="selectedLength ===0"
-        v-show="state != -1"
+        v-show="type != -1"
         @click="toDustbin"
       >垃圾箱</el-button>
     </div>
@@ -89,7 +89,7 @@ export default {
         },
         {
           name: 4,
-          title: "评分"
+          title: "评论"
         },
         {
           name: 5,
@@ -126,7 +126,7 @@ export default {
       window.bus.$emit("changeselect", this.checkList);
     }
   },
-  props: ["state", "selectedLength"]
+  props: ["type", "selectedLength"]
 };
 </script>
 <style scoped>

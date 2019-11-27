@@ -28,18 +28,31 @@
       </el-table-column>
       <el-table-column label="状态" min-width="10%" align="center" v-if="arr[2].show">
         <template slot-scope="{row}">
-          <el-tag type="success" v-if="row.type === 1">已发布</el-tag>
-          <el-tag type="info" v-else-if="row.type === 0">草稿箱</el-tag>
+          <el-tag type="success" v-if="row.type === 'PUBLISHED'">已发布</el-tag>
+          <el-tag type="info" v-else-if="row.type === 'Draft'">草稿箱</el-tag>
           <el-tag type="danger" v-else>垃圾箱</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column label="推荐" min-width="8%" size="mini" align="center" v-if="arr[3].show">
+      <el-table-column label="推荐" min-width="7%" size="mini" align="center" v-if="arr[3].show">
         <template slot-scope="{row}">
           <el-switch
+            width="35"
             v-model="row.recommend"
             active-color="#13ce66"
-            inactive-color="#ff4949"
+            inactive-color="#DCDFE6"
+            @change="changeRecommend(row.id,row.recommend)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="评论" min-width="7%" size="mini" align="center" v-if="arr[4].show">
+        <template slot-scope="{row}">
+          <el-switch
+            width="35"
+            v-model="row.commentabled"
+            active-color="#409EFF"
+            inactive-color="#DCDFE6"
             @change="changeRecommend(row.id,row.recommend)"
           ></el-switch>
         </template>
@@ -63,7 +76,7 @@
 <!--        v-if="arr[5].show"-->
 <!--      ></el-table-column>-->
       <el-table-column
-        prop="pageView"
+        prop="views"
         label="点击量"
         min-width="10%"
         align="center"
