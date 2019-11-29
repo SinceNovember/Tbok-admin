@@ -35,25 +35,27 @@
       </el-table-column>
 
       <el-table-column label="推荐" min-width="7%" size="mini" align="center" v-if="arr[3].show">
-        <template slot-scope="{row}">
+        <template slot-scope="scope">
           <el-switch
             width="35"
-            v-model="row.recommend"
+            v-model="scope.row.recommend"
             active-color="#13ce66"
             inactive-color="#DCDFE6"
-            @change="changeRecommend(row.id,row.recommend)"
+            :active-value="true"
+            :inactive-value="false"
+            @change="changeRecommend(scope.$index,scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
 
       <el-table-column label="评论" min-width="7%" size="mini" align="center" v-if="arr[4].show">
-        <template slot-scope="{row}">
+        <template slot-scope="scope">
           <el-switch
             width="35"
-            v-model="row.commentabled"
+            v-model="scope.row.commentabled"
             active-color="#409EFF"
             inactive-color="#DCDFE6"
-            @change="changeRecommend(row.id,row.recommend)"
+            @change="changeCommentabled(scope.$index,scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
@@ -82,6 +84,8 @@
         align="center"
         v-if="arr[6].show"
       ></el-table-column>
+      <el-badge class="mark" :value="12" />
+
       <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.$index,scope.row)">详细</el-button>
@@ -146,7 +150,6 @@ export default {
       _this.keyWord= params.keywords;
       _this.type = params.type;
       _this.recommend = params.recommend;
-      console.log(params.startDate);
       _this.startDate = params.startDate;
       _this.endDate = params.endDate;
       _this.loadArticles(1, _this.pageSize);
@@ -171,6 +174,7 @@ export default {
     });
   },
   methods: {
+      //加载文章列表
     loadArticles(currentPage, pageSize) {
       var _this = this;
       var params = {
@@ -182,17 +186,50 @@ export default {
         startDate: _this.startDate,
         endDate: _this.endDate,
       };
+      //获取文章
       fetchArticles(params).then(res => {
         _this.articles = res.data.articles;
         _this.totalCount = res.data.totalCount;
         _this.loading = false;
       });
     },
-    changeRecommend(id, val) {
-      updateArticle({ id: id, recommend: val });
+      //改变推荐的状态
+    changeRecommend(index, row) {
+        let flag = row.recommend;
+        row.recommend = !row.recommend;
+        this.$confirm( flag  == true
+            ? "确定推荐此文章?"
+            : "确定取消推荐此文章?",
+            "提示",
+             {
+                 confrimButtonText: "确定",
+                 cancelButtonText: "取消",
+                 type: "warning"
+             }
+        ).then(() =>{
+            row.recommend = flag;
+            updateArticle({ id: row.id, recommend: flag });
+
+        })
     },
-    changeRate(id, val) {
-      updateArticle({ id: id, rate: val });
+      //开启/关闭评论
+    changeCommentabled(index, row) {
+        let flag = row.commentabled;
+        row.commentabled = !row.commentabled;
+        this.$confirm( flag  == true
+            ? "确定开启此文章的评论?"
+            : "确定关闭此文章的评论?",
+            "提示",
+            {
+                confrimButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }
+        ).then(() =>{
+            row.commentabled = flag;
+            updateArticle({ id: row.id, commentabled: flag });
+
+        })
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -222,9 +259,9 @@ export default {
     },
     deleteByType(ids, state) {
       this.$confirm(
-        state == 2
+        type == 2
           ? "永久删除选中的文章, 是否继续?"
-          : state == -1
+          : type == -1
           ? "将选中的文章放入垃圾箱，是否继续?"
           : "将选中的文章放入草稿箱，是否继续?",
         "提示",
