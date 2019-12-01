@@ -56,7 +56,7 @@
         ></el-date-picker>
       </div>
       <div>
-        <el-button type="primary" icon="el-icon-search" @click="search" size="mini" round>搜索</el-button>
+        <el-button  type="primary" icon="el-icon-search"  @click="search" size="mini" round>搜索</el-button>
         <el-button type="info" icon="el-icon-refresh" @click="reset" size="mini" round>重置</el-button>
       </div>
     </div>

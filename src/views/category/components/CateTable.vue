@@ -9,6 +9,18 @@
       v-loading="loading"
     >
       <el-table-column type="selection" width="30%" ></el-table-column>
+
+      <el-table-column
+      label="类别"
+      align="center"
+      min-width="5%"
+      >
+        <template slot-scope="{row}" >
+          <el-badge value="根" class="item">
+          </el-badge>
+        </template>
+      </el-table-column>
+
       <el-table-column
         label="分类名称"
         :show-overflow-tooltip="true"
@@ -20,10 +32,12 @@
           <span
             style="color: #409eff;cursor: pointer"
             @click="itemClick(scope.row)"
-          >{{scope.row.cateName}}</span>
+          >{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="分类描述" prop="description" min-width="25%" align="left" v-if="arr[1].show">
+      <el-table-column
+        label="分类描述" prop="description"
+        min-width="25%" align="left" v-if="arr[1].show">
  
       </el-table-column>
       <el-table-column label="权重" prop="weight" min-width="10%" align="center" v-if="arr[2].show">
@@ -37,24 +51,24 @@
             <el-badge :value="scope.row.linkNumber" class="item" type="primary"></el-badge>
         </template>
       </el-table-column>
-            <el-table-column label="推荐" min-width="8%" size="mini" align="center" v-if="arr[3].show">
-        <template slot-scope="{row}">
-          <el-switch
-            v-model="row.recommend"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            @change="changeRecommend(row.id,row.recommend)"
-          ></el-switch>
-        </template>
-      </el-table-column>
+<!--            <el-table-column label="推荐" min-width="8%" size="mini" align="center" v-if="arr[3].show">-->
+<!--        <template slot-scope="{row}">-->
+<!--          <el-switch-->
+<!--            v-model="row.recommend"-->
+<!--            active-color="#13ce66"-->
+<!--            inactive-color="#ff4949"-->
+<!--            @change="changeRecommend(row.id,row.recommend)"-->
+<!--          ></el-switch>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="创建时间" min-width="19%" sortable align="center" v-if="arr[5].show">
-        <template slot-scope="scope">{{ scope.row.createDate|formatTableDate}}</template>
+        <template slot-scope="scope">{{ scope.row.createDate}}</template>
       </el-table-column>
-     <el-table-column label="图标" prop="icon" min-width="10%" align="center" v-if="arr[6].show">
-         <template slot-scope="{row}">
-            <svg-icon :icon-class="row.icon" style="width: 3em;"  />
-         </template>
-     </el-table-column>
+<!--     <el-table-column label="图标" prop="icon" min-width="10%" align="center" v-if="arr[6].show">-->
+<!--         <template slot-scope="{row}">-->
+<!--            <svg-icon :icon-class="row.icon" style="width: 3em;"  />-->
+<!--         </template>-->
+<!--     </el-table-column>-->
       <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
         <template slot-scope="scope">
           <el-button size="mini" type="warning" @click="dialogVisible = true">编辑</el-button>
@@ -76,7 +90,6 @@
 </template>
 
 <script>
-const cityOptions = ["上海", "北京", "广州", "深圳"];
 import { fetchCategories,deleteCategory } from "@/api/category";
 import { formatDate } from "@/utils/utils";
 import { mapGetters } from "vuex";

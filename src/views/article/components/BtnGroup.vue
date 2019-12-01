@@ -1,35 +1,44 @@
 <template>
   <div class="btn-group">
     <div class="left-group">
-      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="type ===1 || type ===2">新增</el-button>
       <el-button
-        type="success"
-        icon="el-icon-edit"
-        size="mini"
-        v-show="type === -1"
-        :disabled="selectedLength ===0"
-      >恢复</el-button>
-      <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1">修改</el-button>
-      <el-button
-        type="danger"
-        icon="el-icon-close"
-        size="mini"
-        :disabled="selectedLength ===0"
-        @click="deleteMany"
-      >删除</el-button>
+        type="primary" icon="el-icon-plus"
+        size="mini" v-show="type ==='ENTIRE' || type ==='PUBLISHED'"
+      >新增</el-button>
       <el-button
         type="success"
         icon="el-icon-s-promotion"
         size="mini"
         :disabled="selectedLength ===0"
-        v-show="type === 0"
+        v-show="type === 'DRAFT'"
+        @click="toPublished"
       >发布</el-button>
+      <el-button
+        type="success"
+        icon="el-icon-edit"
+        size="mini"
+        v-show="type === 'DUSTBIN'"
+        :disabled="selectedLength ===0"
+        @click="toDraft"
+      >恢复</el-button>
+      <el-button
+        type="warning"
+        icon="el-icon-edit" size="mini"
+         :disabled="selectedLength !=1">修改</el-button>
+      <el-button
+        type="danger"
+        icon="el-icon-close"
+        size="mini"
+        :disabled="selectedLength ===0"
+        @click="toDelete"
+      >删除</el-button>
+
       <el-button
         type="info"
         icon="el-icon-folder"
         size="mini"
         :disabled="selectedLength===0"
-        v-show="type != 0"
+        v-show="type != 'DRAFT' && type != 'DUSTBIN'"
         @click="toDraft"
       >草稿箱</el-button>
       <el-button
@@ -37,7 +46,7 @@
         icon="el-icon-delete-solid"
         size="mini"
         :disabled="selectedLength ===0"
-        v-show="type != -1"
+        v-show="type != 'DUSTBIN'"
         @click="toDustbin"
       >垃圾箱</el-button>
     </div>
@@ -109,18 +118,26 @@ export default {
   methods: {
     resetTable() {
       window.bus.$emit("resetTable");
+      window.bus.$emit("resetLeft");
     },
     toggleHeader() {
       this.$store.dispatch("articleSettings/toggleHeader");
     },
-    deleteMany() {
-      window.bus.$emit("deleteMany", 2);
+    toDelete() {
+      window.bus.$emit("deleteMany");
+    },
+    toPublished() {
+      this.deliverType("PUBLISHED");
     },
     toDraft() {
-      window.bus.$emit("deleteMany", 0);
+      this.deliverType("DRAFT");
     },
     toDustbin() {
-      window.bus.$emit("deleteMany", -1);
+      this.deliverType("DUSTBIN");
+    },
+    deliverType(type) {
+      window.bus.$emit("updateArticleType", type);
+
     },
     changeCol() {
       window.bus.$emit("changeselect", this.checkList);

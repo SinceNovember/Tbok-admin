@@ -1,7 +1,9 @@
 <template>
   <div class="btn-group">
     <div class="left-group">
-      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="clickdia">新增</el-button>
+      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="add('categoryForm')">新增</el-button>
+      <add-category ref="categoryForm" v-if="addCategoryVisible" :visible.sync="addCategoryVisible"></add-category>
+
       <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1">修改</el-button>
       <el-button
         type="danger"
@@ -9,7 +11,7 @@
         size="mini"
         :disabled="selectedLength ===0"
         @click="deleteMany"
-      >删除1</el-button>
+      >删除</el-button>
     </div>
 
     <div class="right-group">
@@ -31,7 +33,6 @@
         </el-dropdown>
       </el-button-group>
     </div>
-    <cate-add :dialogVisible="dialogVisible"></cate-add>
   </div>
 </template>
 <style>
@@ -41,12 +42,12 @@ import CateAdd from "./CateAdd";
 
 export default {
   components:{
-    CateAdd
+    'add-category': CateAdd
   },
   data() {
     return {
+      addCategoryVisible: false,
       checkList: [0, 1, 2, 3, 4, 5, 6, 7],
-      dialogVisible: false,
       dropdowns: [
         {
           name: 0,
@@ -84,6 +85,12 @@ export default {
     };
   },
   methods: {
+    add(refForm){
+      if(this.$refs[refForm]){
+        this.$refs[refForm].initForm();
+      }
+      this.addCategoryVisible= true;
+    },
     toggleHeader() {
       this.$store.dispatch("articleSettings/toggleHeader");
     },
@@ -95,12 +102,6 @@ export default {
     },
     changeCol() {
       window.bus.$emit("changeselect", this.checkList);
-    },
-    clickdia(){
-      console.log("dan");
-      console.log("zzz:"+this.dialogVisible)
-      this.dialogVisible = true;
-      return this.dialogVisible
     }
   },
   props: ["state", "selectedLength"]

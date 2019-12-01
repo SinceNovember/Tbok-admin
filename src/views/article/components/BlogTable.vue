@@ -23,13 +23,11 @@
           >{{scope.row.title}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" min-width="19%" align="center" v-if="arr[1].show">
-        <template slot-scope="scope">{{ scope.row.createTime}}</template>
-      </el-table-column>
+
       <el-table-column label="状态" min-width="10%" align="center" v-if="arr[2].show">
         <template slot-scope="{row}">
           <el-tag type="success" v-if="row.type === 'PUBLISHED'">已发布</el-tag>
-          <el-tag type="info" v-else-if="row.type === 'Draft'">草稿箱</el-tag>
+          <el-tag type="info" v-else-if="row.type === 'DRAFT'">草稿箱</el-tag>
           <el-tag type="danger" v-else>垃圾箱</el-tag>
         </template>
       </el-table-column>
@@ -37,7 +35,7 @@
       <el-table-column label="推荐" min-width="7%" size="mini" align="center" v-if="arr[3].show">
         <template slot-scope="scope">
           <el-switch
-            width="35"
+            width="10%"
             v-model="scope.row.recommend"
             active-color="#13ce66"
             inactive-color="#DCDFE6"
@@ -78,19 +76,38 @@
 <!--        v-if="arr[5].show"-->
 <!--      ></el-table-column>-->
       <el-table-column
-        prop="views"
         label="点击量"
-        min-width="10%"
+        min-width="5%"
         align="center"
         v-if="arr[6].show"
-      ></el-table-column>
-      <el-badge class="mark" :value="12" />
+      >
+        <template slot-scope="{row}" >
+          <el-badge :value="row.views" class="item">
+          </el-badge>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        label="评论量"
+        min-width="5%"
+        align="center"
+        v-if="arr[6].show"
+      >
+        <template slot-scope="{row}" >
+          <el-badge :value="row.views" class="item">
+          </el-badge>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="创建时间" min-width="15%" align="center" v-if="arr[1].show">
+        <template slot-scope="scope">{{ scope.row.createTime}}</template>
+      </el-table-column>
 
       <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.$index,scope.row)">详细</el-button>
           <el-button size="mini" type="warning" @click="test()">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -107,7 +124,7 @@
 </template>
 
 <script>
-import { fetchArticles, updateArticle, deleteArticle } from "@/api/article";
+import { fetchArticles, updateArticle,updateArticle1, deleteArticle } from "@/api/article";
 import { formatDate } from "@/utils/utils";
 import { mapGetters } from "vuex";
 export default {
@@ -162,8 +179,12 @@ export default {
       _this.loading = true;
       _this.loadArticles(_this.currentPage, _this.pageSize);
     });
-    window.bus.$on("deleteMany", type => _this.deleteMany(type));
-
+    window.bus.$on("updateArticleType",type=>{
+      this.handlerUpdateType(type);
+    });
+    window.bus.$on("deleteMany", function () {
+      _this.handleDeleteMany();
+    });
     window.bus.$on("changeselect", type => {
       var _this = this;
       const noselect = _this.all.filter(function(v) {
@@ -231,6 +252,29 @@ export default {
 
         })
     },
+    //修改文章的类型，垃圾箱、草稿箱、发布
+    handlerUpdateType(_type) {
+      this.$confirm(
+        _type == 'PUBLISHED'
+          ?"确定发布此文章?":
+          _type == 'DUSTBIN'
+          ? "将选中的文章放入垃圾箱，是否继续?"
+          : "将选中的文章放入草稿箱，是否继续?",
+        "提示",
+        {
+          confrimButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(()=> {
+        this.multipleSelection.map(item =>{
+          updateArticle({ id: item.id, type: _type});
+        });
+        //刷新表单
+        this.reset();
+      })
+
+    },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.loadArticles(this.currentPage, pageSize);
@@ -238,12 +282,6 @@ export default {
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.loadArticles(currentPage, this.pageSize);
-    },
-    handleDelete(index, row) {
-      this.deleteByType(row.id, 2); //2永久删除，-1放入垃圾箱，0放入回收站
-      // this.dustbinData.push(row.id);
-      // var ids = this.dustbinData.toString();
-      // this.deleteToDustBin(this.state, ids);
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -253,11 +291,38 @@ export default {
       const property = column["property"];
       return row[property] === value;
     },
-    deleteMany(type) {
+    //删除选中的文章
+    handleDeleteMany() {
       var ids = this.multipleSelection.map(item => item.id).toString();
-      this.deleteByType(ids, state);
+      this.handleDelete(ids);
     },
-    deleteByType(ids, state) {
+    //删除指定文章
+    handleDelete(ids) {
+      var _this = this;
+      this.$confirm(
+        "确定要删除指定文章?",
+        "提示",
+        {
+          confrimButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(()=>{
+        _this.loading = true;
+        let params = { ids: ids };
+        deleteArticle(params).then(res=>{
+          if (res.status == 200) {
+            _this.loading = false;
+            this.$message({
+              message:"删除成功",
+              type:"success"
+            });
+          }
+        })
+        this.reset();
+      })
+    },
+    deleteByType(ids, type) {
       this.$confirm(
         type == 2
           ? "永久删除选中的文章, 是否继续?"
@@ -276,6 +341,7 @@ export default {
         deleteArticle(params).then(res => {
           if (res.status == 200) {
             this.loading = false;
+            reset();
             this.$message({
               message:
                 type == 2
@@ -285,11 +351,14 @@ export default {
                   : "已放入草稿箱",
               type: "success"
             });
-            window.bus.$emit("blogTableReload", this.state); //通过选项卡都重新加载数据
-            window.bus.$emit("resetLeft");
           }
         });
       });
+    },
+    //刷新左侧数以及文章数
+    reset() {
+      window.bus.$emit("resetTable");
+      window.bus.$emit("resetLeft");
     },
     resetSearch(_this) {
       var _this = this;
@@ -308,6 +377,9 @@ export default {
 </script>
 
 <style>
+  .item1 .el-badge__content{
+    background-color: #337ab7;
+  }
 .el-scrollbar__wrap {
   overflow-x: hidden;
 }

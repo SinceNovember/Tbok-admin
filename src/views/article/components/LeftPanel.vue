@@ -10,7 +10,7 @@
             <div slot="header" class="clearfix">博客概览</div>
             <ul class="folder-list">
               <li>
-                <a @click="changeArticles(2)">
+                <a @click="changeArticles('ENTIRE')">
                   <i>
                     <svg-icon icon-class="all" />
                   </i>所有
@@ -20,7 +20,7 @@
                 </a>
               </li>
               <li>
-                <a @click="changeArticles(1)">
+                <a @click="changeArticles('PUBLISHED')">
                   <i>
                     <svg-icon icon-class="release" />
                   </i>已发布
@@ -30,7 +30,7 @@
                 </a>
               </li>
               <li>
-                <a @click="changeArticles(0)">
+                <a @click="changeArticles('DRAFT')">
                   <i>
                     <svg-icon icon-class="draft" />
                   </i>草稿箱
@@ -40,7 +40,7 @@
                 </a>
               </li>
               <li>
-                <a @click="changeArticles(-1)">
+                <a @click="changeArticles('DUSTBIN')">
                   <i>
                     <svg-icon icon-class="trash" />
                   </i>垃圾箱
@@ -96,7 +96,8 @@ export default {
       });
     },
     changeArticles(type) {
-      window.bus.$emit('blogTableReload',type)
+      console.log(type);
+      this.$emit('changeArticle',type)
     },
     toggleLeft() {
       this.$store.dispatch("articleSettings/toggleArticleLeft");
