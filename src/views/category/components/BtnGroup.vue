@@ -97,6 +97,10 @@ export default {
       if(this.$refs[refForm]){
         this.$refs[refForm].initForm();
       }
+      if(status == 'add'){
+        this.categoryId = 0 ;
+      }
+      console.log(this.categoryId);
       this.operationStatus = status;
       this.addCategoryVisible= true;
     },

@@ -8,7 +8,7 @@ export const fetchById = params =>{ return axios.get('/api/admin/categories/get'
 
 export const saveCategory  = params => { return axios.post('/api/admin/categories', params);};
 
-export const updateCategory = params => {return axios.post('/category',params);};
+export const updateCategory = params => {return axios.put('/api/admin/categories',params);};
 
 export const deleteCategory = params =>{return axios.delete('/category',{params:params});};
 

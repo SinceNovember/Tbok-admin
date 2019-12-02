@@ -8,7 +8,7 @@
         <el-input v-model="cateoryForm.name"  placeholder="请输入分类名称"></el-input>
       </el-form-item>
       <el-form-item label="父节点：" >
-        <el-select v-model="cateoryForm.parentId" style="width: 100%;" placeholder="无父节点">
+        <el-select v-model="cateoryForm.parentId =='-1'?'':cateoryForm.parentId"  style="width: 100%;" placeholder="无父节点">
           <el-option
             v-for="item in types"
             :key="item.id"
@@ -22,7 +22,7 @@
       </el-form-item>
 
       <el-form-item label="权重：">
-        <el-input-number v-model="cateoryForm.weight"  label="描述文字"></el-input-number>
+        <el-input-number v-model="cateoryForm.weight" :value="cateoryForm.weight" label="描述文字"></el-input-number>
       </el-form-item>
     </el-form>
     <div slot="footer" class="buttons-wrap">
@@ -32,7 +32,7 @@
   </el-dialog>
 </template>
 <script>
-  import { fetchTypes,saveCategory } from "@/api/category";
+  import { fetchTypes,saveCategory,fetchById,updateCategory } from "@/api/category";
   export default {
     props: {
       visible: {
@@ -59,7 +59,7 @@
       var _this = this;
       _this.loadTypes();
         if (_this.categoryId != 0) {
-            _this.loadEditCategory();
+            _this.loadEditCategory(_this.categoryId);
         }
     },
     methods: {
@@ -85,21 +85,38 @@
       addCategory(formName) {
         this.$refs[formName].validate((valid)=>{
           if(valid){
-            saveCategory(this.cateoryForm).then(res=>{
-              if (res.status == 200) {
-                this.$message({
-                  message:"添加成功",
-                  type: 'success'}
-                );
-                this.cancelModal();
-                window.bus.$emit("resetCateTable");
-              }
-            });
+            if (_this.categoryId == 0) {
+              saveCategory(this.cateoryForm).then(res => {
+                if (res.status == 200) {
+                  this.$message({
+                      message: "添加成功",
+                      type: 'success'
+                    }
+                  );
+                }
+              });
+            } else {
+              updateCategory(this.cateoryForm).then(res=>{
+                if (res.status == 200) {
+                  this.$message({
+                      message: "修改成功",
+                      type: 'success'
+                    }
+                  );
+
+                }
+              })
+            }
+            this.cancelModal();
+            window.bus.$emit("resetCateTable");
           }
         })
       },
-        loadEditCategory() {
-
+        loadEditCategory(id) {
+        let params = { id : id };
+          fetchById(params).then(res=>{
+            this.cateoryForm = res.data;
+          })
         }
 
     }

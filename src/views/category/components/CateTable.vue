@@ -127,16 +127,6 @@ export default {
       _this.currentPage = 1;
       _this.loadCategories(1, _this.pageSize);
     });
-    window.bus.$on("searchTable", function(params) {
-      _this.loading = true;
-      _this.currentPage = 1;
-      _this.keywords = params.keywords;
-      _this.state = params.state;
-      _this.recommend = params.recommend;
-      _this.startDate = params.startDate;
-      _this.endDate = params.endDate;
-      _this.loadArticles(1, _this.pageSize);
-    });
     window.bus.$on("resetSearch", function() {
       _this.state = 2;
       _this.resetSearch(_this);
