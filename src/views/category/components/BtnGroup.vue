@@ -1,10 +1,10 @@
 <template>
   <div class="btn-group">
     <div class="left-group">
-      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="add('categoryForm')">新增</el-button>
-      <add-category ref="categoryForm" v-if="addCategoryVisible" :visible.sync="addCategoryVisible"></add-category>
+      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="add('categoryForm','add')">新增</el-button>
+      <add-category ref="categoryForm" v-if="addCategoryVisible" :visible.sync="addCategoryVisible" :categoryId="categoryId" :operation="operationStatus"></add-category>
 
-      <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1">修改</el-button>
+      <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1"  @click="add('categoryForm','edit')">修改</el-button>
       <el-button
         type="danger"
         icon="el-icon-close"
@@ -48,6 +48,8 @@ export default {
     return {
       addCategoryVisible: false,
       checkList: [0, 1, 2, 3, 4, 5, 6, 7],
+      operationStatus  : 'add',
+      categoryId:0,
       dropdowns: [
         {
           name: 0,
@@ -84,11 +86,18 @@ export default {
       ]
     };
   },
+  mounted() {
+    window.bus.$on("editCategory",id=>{
+        this.categoryId = id;
+        this.add('refForm','edit');
+    })
+  },
   methods: {
-    add(refForm){
+    add(refForm,status){
       if(this.$refs[refForm]){
         this.$refs[refForm].initForm();
       }
+      this.operationStatus = status;
       this.addCategoryVisible= true;
     },
     toggleHeader() {

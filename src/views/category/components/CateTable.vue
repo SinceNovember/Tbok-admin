@@ -16,8 +16,9 @@
       min-width="5%"
       >
         <template slot-scope="{row}" >
-          <el-badge value="根" class="item">
-          </el-badge>
+          <el-tag type="success" v-if="row.parentId == '-1'">根</el-tag>
+          <el-tag type="info" v-else>子</el-tag>
+
         </template>
       </el-table-column>
 
@@ -38,12 +39,12 @@
       <el-table-column
         label="分类描述" prop="description"
         min-width="25%" align="left" v-if="arr[1].show">
- 
+
       </el-table-column>
       <el-table-column label="权重" prop="weight" min-width="10%" align="center" v-if="arr[2].show">
         <template slot-scope="{row}">
              <el-badge :value="row.weight" class="item" type="warning"></el-badge>
-        </template> 
+        </template>
       </el-table-column>
 
     <el-table-column label="关联文章数" min-width="19%" align="center" v-if="arr[4].show">
@@ -71,7 +72,7 @@
 <!--     </el-table-column>-->
       <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
         <template slot-scope="scope">
-          <el-button size="mini" type="warning" @click="dialogVisible = true">编辑</el-button>
+          <el-button size="mini" type="warning" @click="edit(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -172,6 +173,9 @@ export default {
         _this.totalCount = res.data.totalCount;
         _this.loading = false;
       });
+    },
+    edit(row){
+        window.bus.$emit("editCategory", row.id);
     },
     changeRecommend(id, val) {
       updateArticle({ id: id, recommend: val });

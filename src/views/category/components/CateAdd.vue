@@ -26,6 +26,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="buttons-wrap">
+      <el-button  @click="cancelModal">取消</el-button>
       <el-button type="primary" @click="addCategory('cateoryForm')">确定</el-button>
     </div>
   </el-dialog>
@@ -37,7 +38,9 @@
       visible: {
         type: Boolean,
         default: false
-      }
+      },
+        operation: String,
+        categoryId:Number
     },
     data(){
       return {
@@ -55,6 +58,9 @@
     mounted() {
       var _this = this;
       _this.loadTypes();
+        if (_this.categoryId != 0) {
+            _this.loadEditCategory();
+        }
     },
     methods: {
       initForm(){
@@ -91,8 +97,11 @@
             });
           }
         })
+      },
+        loadEditCategory() {
 
-      }
+        }
+
     }
   }
 </script>
