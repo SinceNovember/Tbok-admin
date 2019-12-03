@@ -100,7 +100,6 @@ export default {
       if(status == 'add'){
         this.categoryId = 0 ;
       }
-      console.log(this.categoryId);
       this.operationStatus = status;
       this.addCategoryVisible= true;
     },

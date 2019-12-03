@@ -49,27 +49,14 @@
 
     <el-table-column label="关联文章数" min-width="19%" align="center" v-if="arr[4].show">
         <template slot-scope="scope">
-            <el-badge :value="scope.row.linkNumber" class="item" type="primary"></el-badge>
+            <el-badge :value="scope.row.articleCount" class="item" type="primary"></el-badge>
         </template>
       </el-table-column>
-<!--            <el-table-column label="推荐" min-width="8%" size="mini" align="center" v-if="arr[3].show">-->
-<!--        <template slot-scope="{row}">-->
-<!--          <el-switch-->
-<!--            v-model="row.recommend"-->
-<!--            active-color="#13ce66"-->
-<!--            inactive-color="#ff4949"-->
-<!--            @change="changeRecommend(row.id,row.recommend)"-->
-<!--          ></el-switch>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+
       <el-table-column label="创建时间" min-width="19%" sortable align="center" v-if="arr[5].show">
-        <template slot-scope="scope">{{ scope.row.createDate}}</template>
+        <template slot-scope="scope">{{ scope.row.createTime}}</template>
       </el-table-column>
-<!--     <el-table-column label="图标" prop="icon" min-width="10%" align="center" v-if="arr[6].show">-->
-<!--         <template slot-scope="{row}">-->
-<!--            <svg-icon :icon-class="row.icon" style="width: 3em;"  />-->
-<!--         </template>-->
-<!--     </el-table-column>-->
+
       <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
         <template slot-scope="scope">
           <el-button size="mini" type="warning" @click="edit(scope.row)">编辑</el-button>
@@ -103,13 +90,9 @@ export default {
       currentPage: 1,
       pageSize: 10,
       keywords: "",
-      state: 2,
-      recommend: null,
       title: "",
       startDate: "",
       endDate: "",
-      keywords: "",
-      dustbinData: [],
       multipleSelection: [],
       arr: Array.apply(null, Array(8)).map(item => {
         return { show: true };
@@ -154,7 +137,6 @@ export default {
         pageSize: pageSize,
         currentPage: currentPage,
         keywords: this.keywords,
-        recommend: this.recommend,
         startDate: this.startDate,
         endDate: this.endDate
       };
@@ -182,7 +164,7 @@ export default {
       this.loadCategories(currentPage, this.pageSize);
     },
     deleteOne(row){
-                      this.$confirm(
+        this.$confirm(
         "确定要删除该分类?",
         "提示",
         {
@@ -195,22 +177,22 @@ export default {
       })
     },
     handleDelete(row) {
-          if(row.linkNumber == 0){
+          if(row.articleCount == 0){
                 this.loading = true;
                 let params = { ids: row.id};
                 deleteCategory(params).then(res => {
                     if (res.status == 200) {
                     this.loading = false;
-                    this.$message({
+                        window.bus.$emit("cateTableReload"); //通过选项卡都重新加载数据
+                        this.$message({
                     message:
                         "删除成功",
                     type: "success"
                     });
-                    window.bus.$emit("cateTableReload"); //通过选项卡都重新加载数据
                 }
                 });
           }else{
-              this.$message('此分类还有文章,请先讲文章删除');
+              this.$message('此分类还有文章,请先将文章删除');
           }
     },
     handleSelectionChange(val) {

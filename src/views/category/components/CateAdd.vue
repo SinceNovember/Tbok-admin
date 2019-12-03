@@ -1,6 +1,7 @@
 <template>
   <el-dialog :visible.sync="visible" :show-close="false" width="600px" :modal="true" :close-on-click-modal="false" :close-on-press-escape="false">
-    <h2 slot="title">添加分类</h2>
+    <h2 slot="title" v-if="this.categoryId == 0">添加分类</h2>
+    <h2 slot="title" v-else>修改分类</h2>
     <button type="button" aria-label="Close" class="el-dialog__headerbtn" @click.stop="cancelModal"><i class="el-dialog__close el-icon el-icon-close"></i></button>
 
     <el-form class="form-wrapper" ref="cateoryForm" :model="cateoryForm" :rules="rules" label-width="100px">
@@ -85,10 +86,11 @@
       addCategory(formName) {
         this.$refs[formName].validate((valid)=>{
           if(valid){
-            if (_this.categoryId == 0) {
+            if (this.categoryId == 0) {
               saveCategory(this.cateoryForm).then(res => {
                 if (res.status == 200) {
-                  this.$message({
+                    window.bus.$emit("resetCateTable");
+                    this.$message({
                       message: "添加成功",
                       type: 'success'
                     }
@@ -98,17 +100,16 @@
             } else {
               updateCategory(this.cateoryForm).then(res=>{
                 if (res.status == 200) {
-                  this.$message({
+                    window.bus.$emit("resetCateTable");
+                    this.$message({
                       message: "修改成功",
                       type: 'success'
                     }
-                  );
-
+                  )
                 }
               })
             }
-            this.cancelModal();
-            window.bus.$emit("resetCateTable");
+              this.cancelModal();
           }
         })
       },

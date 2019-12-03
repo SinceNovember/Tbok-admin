@@ -10,5 +10,5 @@ export const saveCategory  = params => { return axios.post('/api/admin/categorie
 
 export const updateCategory = params => {return axios.put('/api/admin/categories',params);};
 
-export const deleteCategory = params =>{return axios.delete('/category',{params:params});};
+export const deleteCategory = params =>{return axios.delete('/api/admin/categories',{params:params});};
 

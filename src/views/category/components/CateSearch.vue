@@ -15,22 +15,6 @@
         分类描述:
         <el-input size="mini" v-model="description"></el-input>
       </div>
-        <div>
-            推荐:
-            <el-select
-            v-model="chooseRecommend"
-            size="mini"
-            style="margin-bottom: 0px;"
-            placeholder="所有"
-            >
-            <el-option
-                v-for="item in recommendOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-            ></el-option>
-            </el-select>
-        </div>
       <div>
         创建时间:
         <el-date-picker
