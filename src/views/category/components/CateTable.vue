@@ -14,6 +14,7 @@
       label="类别"
       align="center"
       min-width="5%"
+      v-if="arr[0].show"
       >
         <template slot-scope="{row}" >
           <el-tag type="success" v-if="row.parentId == '-1'">根</el-tag>
@@ -27,7 +28,7 @@
         :show-overflow-tooltip="true"
         min-width="15%"
         align="center"
-        v-if="arr[0].show"
+        v-if="arr[1].show"
       >
         <template slot-scope="scope">
           <span
@@ -38,10 +39,10 @@
       </el-table-column>
       <el-table-column
         label="分类描述" prop="description"
-        min-width="25%" align="left" v-if="arr[1].show">
+        min-width="25%" align="left" v-if="arr[2].show">
 
       </el-table-column>
-      <el-table-column label="权重" prop="weight" min-width="10%" align="center" v-if="arr[2].show">
+      <el-table-column label="权重" prop="weight" min-width="10%" align="center" v-if="arr[3].show">
         <template slot-scope="{row}">
              <el-badge :value="row.weight" class="item" type="warning"></el-badge>
         </template>
@@ -57,7 +58,7 @@
         <template slot-scope="scope">{{ scope.row.createTime}}</template>
       </el-table-column>
 
-      <el-table-column label="操作" min-width="25%" align="center" v-if="arr[7].show">
+      <el-table-column label="操作" min-width="25%" align="center" v-if="arr[6].show">
         <template slot-scope="scope">
           <el-button size="mini" type="warning" @click="edit(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(scope.row)">删除</el-button>
@@ -89,10 +90,11 @@ export default {
       totalCount: 0,
       currentPage: 1,
       pageSize: 10,
-      keywords: "",
+      keyWord: "",
       title: "",
       startDate: "",
       endDate: "",
+      description:"",
       multipleSelection: [],
       arr: Array.apply(null, Array(8)).map(item => {
         return { show: true };
@@ -110,15 +112,25 @@ export default {
       _this.currentPage = 1;
       _this.loadCategories(1, _this.pageSize);
     });
+      window.bus.$on("searchCateTable", function(params) {
+          _this.loading = true;
+          _this.currentPage = 1;
+          _this.keyWord= params.keyWord;
+          _this.description = params.description;
+          _this.startDate = params.startDate;
+          _this.endDate = params.endDate;
+          _this.loadCategories(1, _this.pageSize);
+      });
     window.bus.$on("resetSearch", function() {
-      _this.state = 2;
       _this.resetSearch(_this);
     });
     window.bus.$on("resetCateTable", function() {
       _this.loading = true;
       _this.loadCategories(_this.currentPage, _this.pageSize);
     });
-    window.bus.$on("deleteManyCate", state => _this.deleteMany(state));
+      window.bus.$on("deleteManyCate", function() {
+          _this.deleteMany()
+      });
 
     window.bus.$on("changeselect", state => {
       var _this = this;
@@ -133,12 +145,12 @@ export default {
     loadCategories(currentPage, pageSize) {
       var _this = this;
       var params = {
-        description: this.description,
+        keyWord:_this.keyWord,
+        description: _this.description,
         pageSize: pageSize,
         currentPage: currentPage,
-        keywords: this.keywords,
-        startDate: this.startDate,
-        endDate: this.endDate
+        startDate: _this.startDate,
+        endDate: _this.endDate
       };
       fetchCategories(params).then(res => {
         _this.categories = res.data.categories;
@@ -183,8 +195,8 @@ export default {
                 deleteCategory(params).then(res => {
                     if (res.status == 200) {
                     this.loading = false;
-                        window.bus.$emit("cateTableReload"); //通过选项卡都重新加载数据
-                        this.$message({
+                    window.bus.$emit("cateTableReload"); //通过选项卡都重新加载数据
+                    this.$message({
                     message:
                         "删除成功",
                     type: "success"
@@ -203,7 +215,7 @@ export default {
       const property = column["property"];
       return row[property] === value;
     },
-    deleteMany(state) {
+    deleteMany() {
         this.$confirm(
         "确定要删除该分类?",
         "提示",

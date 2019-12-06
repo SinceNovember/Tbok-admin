@@ -60,6 +60,7 @@
       var _this = this;
       _this.loadTypes();
         if (_this.categoryId != 0) {
+            console.log(_this.categoryId);
             _this.loadEditCategory(_this.categoryId);
         }
     },

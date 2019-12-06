@@ -26,9 +26,7 @@
 
       <el-table-column label="状态" min-width="10%" align="center" v-if="arr[2].show">
         <template slot-scope="{row}">
-          <el-tag type="success" v-if="row.type === 'PUBLISHED'">已发布</el-tag>
-          <el-tag type="info" v-else-if="row.type === 'DRAFT'">草稿箱</el-tag>
-          <el-tag type="danger" v-else>垃圾箱</el-tag>
+          <el-tag :type="row.type | statusFilter">{{row.type | statusInfoFilter}}</el-tag>
         </template>
       </el-table-column>
 
@@ -150,6 +148,7 @@ export default {
       colors: ["#99A9BF", "#F7BA2A", "#FF9900"]
     };
   },
+
   mounted() {
     var _this = this;
     _this.loading = true;

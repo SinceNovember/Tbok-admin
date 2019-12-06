@@ -1,7 +1,7 @@
 <template>
   <div class="article-container">
     <el-card>
-      <btn-group :state="state" :selectedLength="selectedLength"></btn-group>
+      <btn-group :state="state" :selectedLength="selectedLength" :selected="multipleSelection"></btn-group>
       <div class="article-list">
         <cate-table @articleSelected="articleSelected"></cate-table>
       </div>

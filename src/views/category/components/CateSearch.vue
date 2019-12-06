@@ -9,7 +9,7 @@
     <div class="header-left">
       <div>
         分类名称:
-        <el-input size="mini" v-model="keywords"></el-input>
+        <el-input size="mini" v-model="keyWord"></el-input>
       </div>
       <div>
         分类描述:
@@ -51,21 +51,7 @@ export default {
   data() {
     return {
         description:null,
-      recommendOption: [
-        {
-          label: "所有",
-          value: null
-        },
-        {
-          label: "推荐",
-          value: true
-        },
-        {
-          label: "不推荐",
-          value: false
-        }
-      ],
-      pickerOptions: {
+        pickerOptions: {
         shortcuts: [
           {
             text: "最近一周",
@@ -96,10 +82,9 @@ export default {
           }
         ]
       },
-      chooseState: 2,
-      chooseRecommend: null,
       chooseDate: "",
-      keywords: ""
+      keyWord: "",
+      description:""
     };
   },
     computed: {
@@ -108,16 +93,15 @@ export default {
   methods: {
     search() {
       var params = {
-        keywords: this.keywords,
-        state: this.chooseState,
-        recommend: this.chooseRecommend,
+        keyWord: this.keyWord,
+        description: this.description,
         startDate: this.chooseDate[0],
         endDate: this.chooseDate[1]
       };
-      window.bus.$emit("searchTable", params);
+      window.bus.$emit("searchCateTable", params);
     },
     reset() {
-      this.keywords = "";
+      this.keyWord = "";
       this.description = "";
       this.chooseRecommend = null;
       this.chooseDate = "";

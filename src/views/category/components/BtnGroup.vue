@@ -1,10 +1,10 @@
 <template>
   <div class="btn-group">
     <div class="left-group">
-      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="add('categoryForm','add')">新增</el-button>
+      <el-button type="primary" icon="el-icon-plus" size="mini" v-show="state ===1 || state ===2" @click="add('categoryForm','add',0)">新增</el-button>
       <add-category ref="categoryForm" v-if="addCategoryVisible" :visible.sync="addCategoryVisible" :categoryId="categoryId" :operation="operationStatus"></add-category>
 
-      <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1"  @click="add('categoryForm','edit')">修改</el-button>
+      <el-button type="warning" icon="el-icon-edit" size="mini" :disabled="selectedLength !=1"  @click="add('categoryForm','edit',-1)">修改</el-button>
       <el-button
         type="danger"
         icon="el-icon-close"
@@ -51,25 +51,25 @@ export default {
       operationStatus  : 'add',
       categoryId:0,
       dropdowns: [
+          {
+              name: 0,
+              title: "类别"
+          },
         {
-          name: 0,
+          name: 1,
           title: "分类名称"
         },
         {
-          name: 1,
+          name: 2,
           title: "分类描述"
         },
         {
-          name: 2,
+          name: 3,
           title: "权重"
         },
         {
-          name: 3,
-          title: "关联文章数"
-        },
-        {
           name: 4,
-          title: "推荐"
+          title: "关联文章数"
         },
         {
           name: 5,
@@ -77,10 +77,6 @@ export default {
         },
         {
           name: 6,
-          title: "图标"
-        },
-        {
-          name: 7,
           title: "操作"
         }
       ]
@@ -88,18 +84,20 @@ export default {
   },
   mounted() {
     window.bus.$on("editCategory",id=>{
-        this.categoryId = id;
-        this.add('refForm','edit');
+        this.add('refForm','edit',id);
     })
   },
   methods: {
-    add(refForm,status){
+    add(refForm,status,ids){
       if(this.$refs[refForm]){
         this.$refs[refForm].initForm();
       }
-      if(status == 'add'){
-        this.categoryId = 0 ;
-      }
+        if (ids == -1) {
+            this.categoryId = this.selected[0].id;
+        } else {
+            this.categoryId = ids;
+        }
+
       this.operationStatus = status;
       this.addCategoryVisible= true;
     },
@@ -116,7 +114,7 @@ export default {
       window.bus.$emit("changeselect", this.checkList);
     }
   },
-  props: ["state", "selectedLength"]
+  props: ["state", "selectedLength","selected"]
 };
 </script>
 <style scoped>

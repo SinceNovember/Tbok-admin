@@ -96,7 +96,6 @@ export default {
       });
     },
     changeArticles(type) {
-      console.log(type);
       this.$emit('changeArticle',type)
     },
     toggleLeft() {

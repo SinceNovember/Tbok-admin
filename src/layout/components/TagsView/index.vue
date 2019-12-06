@@ -214,6 +214,7 @@ export default {
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
+      margin-buttom:0px !important;
       &:first-of-type {
         margin-left: 15px;
       }
@@ -221,12 +222,12 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
+        background-color: #ffffff;
+        color: #111;
+        border-color: #dae4df;
         &::before {
           content: '';
-          background: #fff;
+          background: #68da6c;
           display: inline-block;
           width: 8px;
           height: 8px;
